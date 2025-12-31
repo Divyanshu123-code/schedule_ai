@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Scheduler - Sign Up</title>
+
+<style>
+/* ========= Base Reset ========== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+  height:100vh; display:flex; justify-content:center; align-items:center;
+  background: radial-gradient(circle at 30% 60%, rgba(255,205,155,0.35), transparent 60%),
+              radial-gradient(circle at 80% 20%, rgba(170,240,210,0.25), transparent 55%),
+              #111;
+  color:#333;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ========= Back Button ========= */
+.back-home{
+  position:absolute; top:18px; left:18px;
+  padding:8px 14px; border-radius:10px;
+  background:rgba(255,255,255,0.12); color:#fff; text-decoration:none;
+  font-size:14px; transition:.3s;
+}
+.back-home:hover{ background:rgba(255,255,255,0.22) }
+
+/* ========= Signup Card ========= */
+.signup-card{
+  width:420px; max-width:92%;
+  background:rgba(255,255,255,0.9);
+  border-radius:18px; padding:40px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.3), 0 0 1px #fff;
+  text-align:center;
+  animation:pop .35s ease;
+}
+@keyframes pop{ 0%{transform:scale(.96); opacity:0;} 100%{transform:scale(1); opacity:1;} }
+
+.signup-card h2{
+  margin-bottom:18px; font-size:1.6rem; font-weight:700;
+}
+
+/* ========= Role Toggle ========= */
+.role-toggle{
+  display:flex; justify-content:center; gap:12px; margin-bottom:20px;
+}
+.role-option{
+  display:flex; align-items:center; gap:6px;
+  padding:8px 14px; cursor:pointer; border-radius:10px;
+  background:#f3f3f3; border:1px solid transparent;
+  transition:.25s; font-weight:500; color:#000 !important;
+}
+.role-option.active{
+  background:#ffd9b4 !important; border-color:#ffb27e !important;
+  color:#000 !important; font-weight:600;
+}
+.role-option input{ cursor:pointer }
+
+/* ========= Input Fields ========= */
+.signup-card input{
+  width:100%; margin:10px 0; padding:14px;
+  border-radius:10px; border:1px solid #ccc;
+  font-size:1rem; background:#fff;
+  transition:.25s;
+}
+.signup-card input:focus{
+  border-color:#ffa867; box-shadow:0 0 6px rgba(255,138,84,0.35);
+  outline:none;
+}
+
+/* ========= Buttons ========= */
+.signup-card button{
+  width:100%; margin-top:14px; border:none; cursor:pointer;
+  padding:14px; border-radius:10px; font-size:1.05rem; font-weight:600;
+  transition:.3s;
+}
+.primary-btn{
+  background:linear-gradient(135deg,#ff8f70,#ffb054);
+  color:white; box-shadow:0 10px 25px rgba(255,140,90,0.28);
+}
+.primary-btn:hover{ transform:translateY(-3px); box-shadow:0 14px 32px rgba(255,140,90,0.38); }
+
+.google-btn{
+  background:#fff; color:#444; border:1px solid #ddd;
+  display:flex; justify-content:center; align-items:center; gap:8px;
+}
+.google-btn img{ width:18px; height:18px; }
+.google-btn:hover{ background:#f0f0f0; }
+
+/* ========= Link ========= */
+.login-link{ font-size:.9rem; color:#444; margin-top:18px; display:inline-block; }
+.login-link:hover{ text-decoration:underline; }
+
+/* ========= Dark Mode Support ========= */
+@media (prefers-color-scheme:dark){
+  .signup-card{ background:rgba(30,30,32,0.8); color:#fff; }
+  .signup-card input{ background:#2b2b2d; color:#fff; border:1px solid #555; }
+  .login-link{ color:#eee; }
+  .google-btn{ background:#222; color:#eee; border:1px solid #444; }
+  .google-btn:hover{ background:#333; }
+
+  /* Force toggle background darker but text black */
+  .role-option{ background:#e8e8e8 !important; border-color:#bbb !important; color:#000 !important; }
+  .role-option.active{ background:#ffd9b4 !important; border-color:#ffb27e !important; color:#000 !important; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔙 Back to Intro Page -->
+<a href="intropage.html" class="back-home">← Back to Intro</a>
+
+<div class="signup-card">
+  <h2>Create Account</h2>
+
+  <div class="role-toggle">
+    <label class="role-option active">
+      <input type="radio" name="role" value="student" checked> Student
+    </label>
+    <label class="role-option">
+      <input type="radio" name="role" value="faculty"> Faculty
+    </label>
+  </div>
+
+  <form id="signup-form">
+    <input type="text" id="fullName" placeholder="Full Name" required>
+    <input type="text" id="userId" placeholder="User ID" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+    <button type="submit" class="primary-btn">Sign Up</button>
+  </form>
+
+  <button class="google-btn">
+    <img src="image/google.png"> Sign up with Google
+  </button>
+
+  <a href="login.html" class="login-link">Already have an account? Login</a>
+</div>
+
+<script>
+// Toggle select UI
+document.querySelectorAll(".role-option").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".role-option").forEach(o=>o.classList.remove("active"));
+    btn.classList.add("active");
+    btn.querySelector("input").checked = true;
+  });
+});
+
+// Redirect to Dashboard on submit
+document.getElementById("signup-form").addEventListener("submit", e=>{
+  e.preventDefault();
+  window.location.href = "index.html";
+});
+</script>
+
+</body>
+</html>

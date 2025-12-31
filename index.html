@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Scheduler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="toolbar-left">
+            <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+            <span class="title">AI Scheduler</span>
+        </div>
+
+        <div class="toolbar-right">
+            <span class="icon" id="themeToggle">🌙</span>
+            <span class="icon">🔔</span>
+            <span class="icon">👤</span>
+        </div>
+    </header>
+
+    <div class="layout" id="layout">
+
+        <aside class="sidebar" id="sidebar">
+            <ul>
+                <li class="active">Home</li>
+                <li>Routine</li>
+                <li>Events</li>
+                <li>Calendar</li>
+                <li>Profile</li>
+                <li>Settings</li>
+                <li>Logout</li>
+            </ul>
+        </aside>
+
+        <main class="main">
+            <div class="controls-row">
+                <h2>Weekly Timetable</h2>
+
+                
+                <div class="generator-ui">
+                    <button id="loadSample">Load sample subjects</button>
+                    <button id="addSubjectBtn">Add subject</button>
+                    <button id="generateBtn" class="primary">Generate Schedule</button>
+                    <button id="clearBtn">Clear</button>
+                </div>
+            </div>
+
+            
+            <div id="subjectEditor" class="subject-editor">
+                <table id="subjectTable">
+                    <thead>
+                        <tr><th>Subject</th><th>Sessions/Wk</th><th>Preferred (comma slots)</th><th>Color</th><th></th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            
+            <div class="table-wrap">
+                <table class="timetable" id="timetable">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Time</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr><td>1</td><td>8:10 - 9:00</td><td data-row="1" data-col="0"></td><td data-row="1" data-col="1"></td><td data-row="1" data-col="2"></td><td data-row="1" data-col="3"></td><td data-row="1" data-col="4"></td></tr>
+                        <tr><td>2</td><td>9:00 - 9:50</td><td data-row="2" data-col="0"></td><td data-row="2" data-col="1"></td><td data-row="2" data-col="2"></td><td data-row="2" data-col="3"></td><td data-row="2" data-col="4"></td></tr>
+                        <tr><td>3</td><td>9:50 - 10:40</td><td data-row="3" data-col="0"></td><td data-row="3" data-col="1"></td><td data-row="3" data-col="2"></td><td data-row="3" data-col="3"></td><td data-row="3" data-col="4"></td></tr>
+                        <tr><td>4</td><td>10:40 - 11:30</td><td data-row="4" data-col="0"></td><td data-row="4" data-col="1"></td><td data-row="4" data-col="2"></td><td data-row="4" data-col="3"></td><td data-row="4" data-col="4"></td></tr>
+                        <tr><td>5</td><td>11:30 - 12:20</td><td data-row="5" data-col="0"></td><td data-row="5" data-col="1"></td><td data-row="5" data-col="2"></td><td data-row="5" data-col="3"></td><td data-row="5" data-col="4"></td></tr>
+                        <tr><td>6</td><td>12:20 - 13:10</td><td data-row="6" data-col="0"></td><td data-row="6" data-col="1"></td><td data-row="6" data-col="2"></td><td data-row="6" data-col="3"></td><td data-row="6" data-col="4"></td></tr>
+                        <tr><td>7</td><td>13:10 - 14:00</td><td data-row="7" data-col="0"></td><td data-row="7" data-col="1"></td><td data-row="7" data-col="2"></td><td data-row="7" data-col="3"></td><td data-row="7" data-col="4"></td></tr>
+                        <tr><td>8</td><td>14:00 - 14:50</td><td data-row="8" data-col="0"></td><td data-row="8" data-col="1"></td><td data-row="8" data-col="2"></td><td data-row="8" data-col="3"></td><td data-row="8" data-col="4"></td></tr>
+                        <tr><td>9</td><td>14:50 - 15:40</td><td data-row="9" data-col="0"></td><td data-row="9" data-col="1"></td><td data-row="9" data-col="2"></td><td data-row="9" data-col="3"></td><td data-row="9" data-col="4"></td></tr>
+                        <tr><td>10</td><td>15:40 - 16:30</td><td data-row="10" data-col="0"></td><td data-row="10" data-col="1"></td><td data-row="10" data-col="2"></td><td data-row="10" data-col="3"></td><td data-row="10" data-col="4"></td></tr>
+                        <tr><td>11</td><td>16:30 - 17:20</td><td data-row="11" data-col="0"></td><td data-row="11" data-col="1"></td><td data-row="11" data-col="2"></td><td data-row="11" data-col="3"></td><td data-row="11" data-col="4"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            
+            <div id="legend" class="legend"></div>
+
+        </main>
+
+        
+        <aside class="events">
+            <h3>Important Events</h3>
+            <div class="card event">Physics Assignment – Due Today</div>
+            <div class="card event">Math Quiz – Tomorrow</div>
+            <div class="card event">AI Project Review – Friday</div>
+        </aside>
+
+    </div>
+
+<script>
+
+function toggleSidebar() {
+    const layout = document.getElementById("layout");
+    layout.classList.toggle("sidebar-open");
+}
+
+
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    themeToggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+});
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    themeToggle.textContent = "☀️";
+}
+
+
+
+const subjectTableBody = document.querySelector("#subjectTable tbody");
+const loadSampleBtn = document.getElementById("loadSample");
+const addSubjectBtn = document.getElementById("addSubjectBtn");
+const generateBtn = document.getElementById("generateBtn");
+const clearBtn = document.getElementById("clearBtn");
+const legendEl = document.getElementById("legend");
+const timetable = document.getElementById("timetable");
+
+
+function addSubjectRow(subject = {name:"", sessions:2, prefs:"", color:"#ffd166"}) {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+        <td><input class="s-name" value="${escapeHtml(subject.name)}" placeholder="Subject name"></td>
+        <td><input class="s-sessions" type="number" min="1" value="${subject.sessions}"></td>
+        <td><input class="s-prefs" placeholder="e.g. 1-0,3-2" value="${escapeHtml(subject.prefs || '')}"></td>
+        <td><input class="s-color" type="color" value="${subject.color}"></td>
+        <td><button class="remove-sub">Remove</button></td>
+    `;
+
+    tr.querySelector(".remove-sub").addEventListener("click", () => tr.remove());
+    subjectTableBody.appendChild(tr);
+}
+
+
+function escapeHtml(s){ return (s||"").toString().replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+
+function readSubjects() {
+    const rows = Array.from(subjectTableBody.querySelectorAll("tr"));
+    const list = [];
+    for (const r of rows) {
+        const name = r.querySelector(".s-name").value.trim();
+        const sessions = parseInt(r.querySelector(".s-sessions").value) || 0;
+        const prefs = r.querySelector(".s-prefs").value.trim();
+        const color = r.querySelector(".s-color").value || "#ffd166";
+        if (!name || sessions <= 0) continue;
+        
+        const prefSlots = [];
+        if (prefs) {
+            const parts = prefs.split(",").map(p=>p.trim()).filter(Boolean);
+            for (const p of parts) {
+                
+                if (p.includes("-")) {
+                    const [per, day] = p.split("-").map(x=>x.trim());
+                    const perN = parseInt(per);
+                    const dayN = parseInt(day);
+                    if (!isNaN(perN) && !isNaN(dayN) && perN>=1 && perN<=11 && dayN>=0 && dayN<=4) {
+                        prefSlots.push({period: perN, day: dayN});
+                    }
+                } else {
+                    const num = parseInt(p);
+                    if (!isNaN(num) && num>=1 && num<=11) {
+                        // prefer any day at that period
+                        for (let d=0; d<5; d++) prefSlots.push({period:num, day:d});
+                    }
+                }
+            }
+        }
+        list.push({name, sessions, prefs: prefSlots, color});
+    }
+    return list;
+}
+
+
+function clearTimetableUI(){
+    const tds = timetable.querySelectorAll("td[data-row]");
+    tds.forEach(td => {
+        td.textContent = "";
+        td.style.background = "";
+        td.style.color = "";
+    });
+    legendEl.innerHTML = "";
+}
+
+/* fill a specific cell (period, day) */
+function fillCell(period, day, subject){
+    // find td with matching data
+    const td = timetable.querySelector(`td[data-row="${period}"][data-col="${day}"]`);
+    if (!td) return false;
+    td.textContent = subject.name;
+    td.style.background = subject.color;
+    // choose text color (black/white) for contrast
+    td.style.color = getContrastYIQ(subject.color);
+    td.title = subject.name;
+    return true;
+}
+
+/* compute contrast color for text */
+function getContrastYIQ(hexcolor){
+    const c = hexcolor.replace("#","");
+    const r = parseInt(c.substr(0,2),16);
+    const g = parseInt(c.substr(2,2),16);
+    const b = parseInt(c.substr(4,2),16);
+    const yiq = (r*299 + g*587 + b*114)/1000;
+    return (yiq >= 128) ? "#111" : "#fff";
+}
+
+/* greedy scheduler "AI" */
+function generateSchedule(subjects) {
+    // subjects: [{name, sessions, prefs[], color}]
+    // Build empty grid: periods 1..11, days 0..4
+    const grid = {};
+    function key(p,d){ return `${p}-${d}`; }
+
+    // mark free slots list
+    const freeSlots = [];
+    for (let p=1;p<=11;p++){
+        for (let d=0; d<5; d++){
+            freeSlots.push({period:p, day:d});
+        }
+    }
+
+    // helper: check empty
+    function isEmpty(p,d){ return !grid[key(p,d)]; }
+
+    // 1) First assign preferred slots
+    // we'll iterate subjects sorted by sessions descending to assign high-need subjects first
+    const pool = subjects.map(s => ({...s, remaining: s.sessions}));
+    pool.sort((a,b)=>b.remaining - a.remaining);
+
+    // Assign preferred explicit slots first
+    for (const subj of pool) {
+        // dedupe preferred slots
+        const uniqPrefs = [];
+        const seen = new Set();
+        for (const pf of subj.prefs) {
+            const k = key(pf.period,pf.day);
+            if (!seen.has(k)) { uniqPrefs.push(pf); seen.add(k); }
+        }
+        for (const pf of uniqPrefs) {
+            if (subj.remaining <= 0) break;
+            if (isEmpty(pf.period,pf.day)) {
+                grid[key(pf.period,pf.day)] = subj;
+                subj.remaining--;
+            }
+        }
+    }
+
+    const candidates = [];
+    for (const subj of pool) {
+        if (subj.remaining <= 0) continue;
+        for (const slot of freeSlots) {
+            if (!isEmpty(slot.period, slot.day)) continue;
+            let score = 0;
+            for (const pf of subj.prefs) {
+                if (pf.period === slot.period && pf.day === slot.day) score += 3;
+                else if (pf.period === slot.period) score += 2;
+                else if (pf.day === slot.day) score += 1;
+            }
+            // also favor morning slots lightly (period 1..3)
+            if (slot.period <= 3) score += 0.2;
+            candidates.push({subject: subj, slot, score});
+        }
+    }
+
+    // sort candidates by score desc, then by subject.remaining desc to place high-need subjects earlier
+    candidates.sort((a,b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return (b.subject.remaining || 0) - (a.subject.remaining || 0);
+    });
+
+    // greedy placement
+    for (const cand of candidates) {
+        const s = cand.subject;
+        const p = cand.slot.period, d = cand.slot.day;
+        if (s.remaining <= 0) continue;
+        if (isEmpty(p,d)) {
+            grid[key(p,d)] = s;
+            s.remaining--;
+        }
+    }
+
+    // If some subject still has remaining sessions, fill any free slots left arbitrarily
+    for (const subj of pool) {
+        while (subj.remaining > 0) {
+            let found=false;
+            for (let p=1;p<=11 && !found;p++){
+                for (let d=0; d<5 && !found; d++){
+                    if (isEmpty(p,d)) {
+                        grid[key(p,d)] = subj;
+                        subj.remaining--;
+                        found = true;
+                    }
+                }
+            }
+            if (!found) break; // timetable full
+        }
+    }
+
+    // return grid mapping
+    return grid;
+}
+
+/* populate UI from computed grid */
+function populateGridUI(grid, subjects) {
+    clearTimetableUI();
+    // fill cells
+    for (let p=1;p<=11;p++){
+        for (let d=0; d<5; d++){
+            const k = `${p}-${d}`;
+            const subj = grid[k];
+            if (subj) fillCell(p,d,subj);
+        }
+    }
+    // build legend
+    const unique = {};
+    for (const s of subjects) { unique[s.name] = s.color; }
+    legendEl.innerHTML = "";
+    for (const name in unique) {
+        const color = unique[name];
+        const el = document.createElement("div");
+        el.className = "legend-item";
+        el.innerHTML = `<span class="swatch" style="background:${color}"></span><span>${escapeHtml(name)}</span>`;
+        legendEl.appendChild(el);
+    }
+}
+
+/* --------- Buttons & sample data ---------- */
+
+function loadSampleSubjects(){
+    // Sample list derived from your AIML 1C timetable (approx)
+    const sample = [
+        {name:"PS Using C (L)", sessions:2, prefs:"", color:"#ff7b7b"},
+        {name:"PS Using C Lab", sessions:2, prefs:"", color:"#ffb86b"},
+        {name:"Quantum Mechanics (L)", sessions:2, prefs:"", color:"#ffd166"},
+        {name:"Quantum Mechanics Lab", sessions:1, prefs:"", color:"#ffd166"},
+        {name:"Probability & Statistics (L)", sessions:2, prefs:"", color:"#8bd3dd"},
+        {name:"Probability & Statistics (T)", sessions:1, prefs:"", color:"#8bd3dd"},
+        {name:"Environmental Sciences", sessions:1, prefs:"", color:"#bdb2ff"},
+        {name:"Web Designing - Workshop", sessions:1, prefs:"", color:"#c3f584"},
+        {name:"Computer Aided Drafting", sessions:1, prefs:"", color:"#a0c4ff"},
+        {name:"Professional Communication", sessions:1, prefs:"", color:"#ffafcc"}
+    ];
+    subjectTableBody.innerHTML = "";
+    for (const s of sample) addSubjectRow(s);
+}
+
+loadSampleBtn.addEventListener("click", loadSampleSubjects);
+addSubjectBtn.addEventListener("click", ()=>addSubjectRow());
+clearBtn.addEventListener("click", ()=>{ clearTimetableUI(); });
+
+/* MAIN generate action */
+generateBtn.addEventListener("click", ()=>{
+    const subjects = readSubjects();
+    if (!subjects.length) {
+        alert("Add at least one subject with sessions per week.");
+        return;
+    }
+
+    // Here we call the local heuristic 'AI' generator.
+    // If you want to plug a real LLM, replace this block with an API call and fill the returned grid similarly.
+    const grid = generateSchedule(subjects);
+
+    populateGridUI(grid, subjects);
+});
+
+/* init UI with one empty row */
+addSubjectRow();
+
+</script>
+
+</body>
+</html>
